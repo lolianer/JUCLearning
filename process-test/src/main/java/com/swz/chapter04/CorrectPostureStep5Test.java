@@ -3,12 +3,12 @@ package com.swz.chapter04;
 import com.swz.util.Sleeper;
 import lombok.extern.slf4j.Slf4j;
 
-/**wait、notify方法的正确使用
+/**
  * @author shen_wzhong
- * @create 2022-04-12 18:34
+ * @create 2022-04-13 8:21
  */
-@Slf4j(topic = "c.CorrectPostureStep1Test")
-public class CorrectPostureStep1Test {
+@Slf4j(topic = "c.CorrectPostureStep5Test")
+public class CorrectPostureStep5Test {
     static final Object room = new Object();
     static boolean hasCigarette = false;//有没有烟
     static boolean hasTakeout = false;
@@ -17,7 +17,7 @@ public class CorrectPostureStep1Test {
         new Thread(() -> {
             synchronized (room) {
                 log.debug("有烟没？[{}]", hasCigarette);
-                if (!hasCigarette) {
+                while (!hasCigarette) {
                     log.debug("没烟，先歇会！");
                     try {
                         room.wait();//这里进入休眠
@@ -38,7 +38,7 @@ public class CorrectPostureStep1Test {
             synchronized (room) {
                 Thread thread = Thread.currentThread();
                 log.debug("外卖送到没？[{}]", hasTakeout);
-                if (!hasTakeout) {
+                while (!hasTakeout) {
                     log.debug("没外卖，先歇会！");
                     try {
                         room.wait();
@@ -60,7 +60,7 @@ public class CorrectPostureStep1Test {
             synchronized(room) {
                 hasTakeout = true;
                 log.debug("外卖到了噢！");
-                room.notify(); //上面线程休眠，就必须有唤醒，否则会一直休眠
+                room.notifyAll(); //上面线程休眠，就必须有唤醒，否则会一直休眠
             }
         }, "送烟的").start();
 
