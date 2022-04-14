@@ -3,6 +3,7 @@ package com.swz.chapter04;
 import com.swz.util.Sleeper;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**可重入锁 ReentrantLock的测试
@@ -14,6 +15,39 @@ public class ReentrantLockTest {
     static ReentrantLock lock = new ReentrantLock();
 
     public static void main(String[] args) {
+        Thread t1 = new Thread(() -> {
+            log.debug("尝试获得锁");
+            try {
+                if (! lock.tryLock(2, TimeUnit.SECONDS)) {
+                    log.debug("获取不到锁");
+                    return;
+                }
+            } catch (InterruptedException e) {//也可以让别的线程打断等待，就进入了异常
+                e.printStackTrace();
+                log.debug("获取不到锁");
+                return;
+            }
+            try {
+                log.debug("获取到了锁");
+            } finally {
+                lock.unlock();
+            }
+        },"t1");
+
+        lock.lock();
+        log.debug("获取到了锁");
+        t1.start();
+        Sleeper.sleep(1);
+        log.debug("释放了锁");
+        lock.unlock();
+    }
+
+
+    /**
+     * 两个 synchronized 竞争锁，在等待锁时，别的线程打断不了
+     * @param args
+     */
+    public static void main2(String[] args) {
         Thread t1 = new Thread(() -> {
             log.debug("尝试获得锁");
             synchronized (lock) {
