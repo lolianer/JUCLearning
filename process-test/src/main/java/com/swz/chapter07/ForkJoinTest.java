@@ -14,8 +14,8 @@ import java.util.concurrent.RecursiveTask;
 public class ForkJoinTest {
     public static void main(String[] args) {
         //创建Fork/join线程池对象
-        ForkJoinPool pool = new ForkJoinPool(4);
-        Integer invoke = pool.invoke(new MyTask(5));
+        ForkJoinPool pool = new ForkJoinPool();
+        Integer invoke = pool.invoke(new AddTask3(1, 1000));
         System.out.println(invoke);
         
         //如何拆分 从1加到5 的任务
