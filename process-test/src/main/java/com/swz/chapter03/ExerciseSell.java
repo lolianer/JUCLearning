@@ -57,7 +57,7 @@ class TicketWindow {
         return count;
     }
     //在方法上加一个synchronized即可
-    public int sell(int amount) {
+    public int sell(int amount) { //synchronized
         if (this.count >= amount) {
             try {
                 Thread.sleep(20);
